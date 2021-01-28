@@ -8,8 +8,13 @@ import (
 )
 
 const (
-	validateEmpty  = "value cannot be empty"
-	validateLength = "value %s must be between %d and %d"
+	validateEmpty      = "value cannot be empty"
+	validateLength     = "value %s must be between %d and %d"
+	validateMin        = "value %d is smaller than minimum %d"
+	validateMax        = "value %d is larger than maximum %d"
+	validateNumBetween = "value %d must be between %d and %d"
+	validatePositive   = "value %d should be greater than 0"
+	validateRegex      = "value %s failed to meet requirements"
 )
 
 // Length will ensure a string has a length that is at least min and
@@ -29,7 +34,7 @@ func MinInt(val, min int) ValidationFunc {
 		if val >= min {
 			return nil
 		}
-		return fmt.Errorf("value %d is smaller than minimum %d", val, min)
+		return fmt.Errorf(validateMin, val, min)
 	}
 }
 
@@ -39,7 +44,7 @@ func MaxInt(val, max int) ValidationFunc {
 		if val <= max {
 			return nil
 		}
-		return fmt.Errorf("value %d is larger than maximum %d", val, max)
+		return fmt.Errorf(validateMax, val, max)
 	}
 }
 
@@ -49,27 +54,27 @@ func BetweenInt(val, min, max int) ValidationFunc {
 		if val >= min && val <= max {
 			return nil
 		}
-		return fmt.Errorf("value %d must be between %d and %d", val, min, max)
+		return fmt.Errorf(validateNumBetween, val, min, max)
 	}
 }
 
 // MinInt64 will ensure an Int64, val, is at least min in value.
-func MinInt64(val, min int) ValidationFunc {
+func MinInt64(val, min int64) ValidationFunc {
 	return func() error {
 		if val >= min {
 			return nil
 		}
-		return fmt.Errorf("value %d is smaller than minimum %d", val, min)
+		return fmt.Errorf(validateMin, val, min)
 	}
 }
 
 // MaxInt64 will ensure an Int64, val, is at most Max in value.
-func MaxInt64(val, max int) ValidationFunc {
+func MaxInt64(val, max int64) ValidationFunc {
 	return func() error {
 		if val <= max {
 			return nil
 		}
-		return fmt.Errorf("value %d is larger than maximum %d", val, max)
+		return fmt.Errorf(validateMax, val, max)
 	}
 }
 
@@ -79,7 +84,7 @@ func BetweenInt64(val, min, max int64) ValidationFunc {
 		if val >= min && val <= max {
 			return nil
 		}
-		return fmt.Errorf("value %d must be between %d and %d", val, min, max)
+		return fmt.Errorf(validateNumBetween, val, min, max)
 	}
 }
 
@@ -88,7 +93,7 @@ func PositiveInt(val int) ValidationFunc {
 		if val > 0 {
 			return nil
 		}
-		return fmt.Errorf("value %d should be greater than 0", val)
+		return fmt.Errorf(validatePositive, val)
 	}
 }
 
@@ -101,13 +106,13 @@ func PositiveInt64(val int64) ValidationFunc {
 	}
 }
 
-// Match will check that a string, val, matches the provided regular expression.
-func Match(val string, r *regexp.Regexp) ValidationFunc {
+// MatchString will check that a string, val, matches the provided regular expression.
+func MatchString(val string, r *regexp.Regexp) ValidationFunc {
 	return func() error {
 		if r.MatchString(val) {
 			return nil
 		}
-		return fmt.Errorf("value %s failed to meet requirements", val)
+		return fmt.Errorf(validateRegex, val)
 	}
 }
 
@@ -117,7 +122,7 @@ func MatchBytes(val []byte, r *regexp.Regexp) ValidationFunc {
 		if r.Match(val) {
 			return nil
 		}
-		return fmt.Errorf("value %s failed to meet requirements", val)
+		return fmt.Errorf(validateRegex, val)
 	}
 }
 
