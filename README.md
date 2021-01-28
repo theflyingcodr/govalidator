@@ -1,4 +1,4 @@
-# Validator
+# Validator [![Go Report Card](https://goreportcard.com/badge/github.com/theflyingcodr/govalidator)](https://goreportcard.com/report/github.com/theflyingcodr/govalidator)
 
 **WIP**
 

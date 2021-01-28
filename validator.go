@@ -10,18 +10,27 @@ type Validator interface {
 	Validate() error
 }
 
+// ValidationFunc defines a simple function that can be wrapped
+// and supplied with arguments.
 type ValidationFunc func() error
 
+// String satisfies the String interface and returns the underlying error
+// string that is returned by evaluating the function.
 func (v ValidationFunc) String() string {
 	return v().Error()
 }
 
+// ErrValidation contains a list of field names and a list of errors
+// found against each. This can then be converted for output to a user.
 type ErrValidation map[string][]string
 
+// New will create and return a new ErrValidation which can have Validate functions chained.
 func New() ErrValidation {
 	return map[string][]string{}
 }
 
+// Validate will log any errors found when evaluating the list of validation functions
+// supplied to it
 func (e ErrValidation) Validate(field string, fns ...ValidationFunc) ErrValidation {
 	out := make([]string, len(fns), len(fns))
 	for _, fn := range fns {
