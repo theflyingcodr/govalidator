@@ -88,7 +88,7 @@ func BetweenInt64(val, min, max int64) ValidationFunc {
 	}
 }
 
-// PositiveInt64 will ensure an int, val, is > 0.
+// PositiveInt will ensure an int, val, is > 0.
 func PositiveInt(val int) ValidationFunc {
 	return func() error {
 		if val > 0 {
