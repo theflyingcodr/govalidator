@@ -1,4 +1,4 @@
-# Validator [![Go Report Card](https://goreportcard.com/badge/github.com/theflyingcodr/govalidator)](https://goreportcard.com/report/github.com/theflyingcodr/govalidator) ![CI Status](https://github.com/theflyingcodr/govalidator/workflows/Go/badge.svg)
+# Validator [![Go Report Card](https://goreportcard.com/badge/github.com/theflyingcodr/govalidator)](https://goreportcard.com/report/github.com/theflyingcodr/govalidator) [![CI Status](https://github.com/theflyingcodr/govalidator/workflows/Go/badge.svg)](https://github.com/theflyingcodr/govalidator/actions?query=workflow%3AGo)
 
 This is a simple input validator for go programs which can be used to test inputs at the boundary of your application.
 
