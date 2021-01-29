@@ -2,13 +2,13 @@
 // either against a struct or by checking values using the provided
 // fluent API.
 //
-// It stores the output of any errors found in a useable structure that lists
+// It stores the output of any errors found in a usable structure that lists
 // the field names and all validation errors associated with it.
 //
 // This allows the output to be serialised and returned in 400 responses or equivalent
 // with readable and useful messages.
 //
-// It is designed to be simple to use and comes with a series of built in valdiation
+// It is designed to be simple to use and comes with a series of built in validation
 // functions. You can add your own simply by wrapping the provided ValidationFunc.
 package validator
 

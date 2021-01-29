@@ -3,7 +3,7 @@
 //
 // I would recommend using this method of validation in your service layer
 // and transport agnostic to ensure portability, but this example shows
-// a simple useage.
+// a simple usage.
 package main
 
 import (
