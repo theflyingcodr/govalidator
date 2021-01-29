@@ -1,4 +1,4 @@
-module github.com/theflyingcodr/validator
+module github.com/theflyingcodr/govalidator
 
 go 1.15
 
