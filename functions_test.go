@@ -469,17 +469,17 @@ func TestDateAfter(t *testing.T) {
 				time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC)),
 		},
 		"date before exp should fail": {
-			val: time.Date(2022, 1, 1, 1, 1, 1, 1, time.UTC),
+			val: time.Date(2020, 1, 1, 1, 1, 1, 1, time.UTC),
 			exp: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
 			expErr: fmt.Errorf(validateDateAfter,
-				time.Date(2022, 1, 1, 1, 1, 1, 1, time.UTC),
+				time.Date(2020, 1, 1, 1, 1, 1, 1, time.UTC),
 				time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC)),
 		},
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is := is.NewRelaxed(t)
-			is.Equal(test.expErr, DateBefore(test.val, test.exp)())
+			is.Equal(test.expErr, DateAfter(test.val, test.exp)())
 		})
 	}
 }
