@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/theflyingcodr/validator"
+	"github.com/theflyingcodr/govalidator"
 )
 
 var (

@@ -18,7 +18,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/theflyingcodr/validator"
+	"github.com/theflyingcodr/govalidator"
 )
 
 // Request is a request, duh.
