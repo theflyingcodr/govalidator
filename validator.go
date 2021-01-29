@@ -1,4 +1,4 @@
-// Validator allows simple boundary checking of user input
+// Package validator allows simple boundary checking of user input
 // either against a struct or by checking values using the provided
 // fluent API.
 //
