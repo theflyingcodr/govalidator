@@ -6,6 +6,11 @@ import (
 	"strings"
 )
 
+// Validator is an interface that can be implemented on a struct
+// to run validation checks against its properties.
+//
+// This is designed to be used in http handlers or middleware where
+// all requests can be checked for this behaviour and evaluated.
 type Validator interface {
 	Validate() error
 }

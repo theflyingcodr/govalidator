@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"time"
 )
 
 const (
@@ -15,9 +16,13 @@ const (
 	validateNumBetween = "value %d must be between %d and %d"
 	validatePositive   = "value %d should be greater than 0"
 	validateRegex      = "value %s failed to meet requirements"
+	validateBool       = "value %v does not evaluate to %v"
+	validateDateEqual  = "the date/time provided %s, does not match the expected %s"
+	validateDateAfter  = "the date provided %s, must be after %s"
+	validateDateBefore = "the date provided %s, must be before %s"
 )
 
-// Length will ensure a string has a length that is at least min and
+// Length will ensure a string, val, has a length that is at least min and
 // at most max.
 func Length(val string, min, max int) ValidationFunc {
 	return func() error {
@@ -28,7 +33,7 @@ func Length(val string, min, max int) ValidationFunc {
 	}
 }
 
-// MinInt will ensure an Int is at least min in value.
+// MinInt will ensure an Int, val, is at least min in value.
 func MinInt(val, min int) ValidationFunc {
 	return func() error {
 		if val >= min {
@@ -125,6 +130,46 @@ func MatchBytes(val []byte, r *regexp.Regexp) ValidationFunc {
 			return nil
 		}
 		return fmt.Errorf(validateRegex, val)
+	}
+}
+
+// Bool is a simple check to ensure that val matches either true / false as defined by exp.
+func Bool(val, exp bool) ValidationFunc {
+	return func() error {
+		if val == exp {
+			return nil
+		}
+		return fmt.Errorf(validateBool, val, exp)
+	}
+}
+
+// DateEqual will ensure that a date/time, val, matches exactly exp.
+func DateEqual(val, exp time.Time) ValidationFunc {
+	return func() error {
+		if val.Equal(exp) {
+			return nil
+		}
+		return fmt.Errorf(validateDateEqual, val, exp)
+	}
+}
+
+// DateAfter will ensure that a date/time, val, occurs after exp.
+func DateAfter(val, exp time.Time) ValidationFunc {
+	return func() error {
+		if val.After(exp) {
+			return nil
+		}
+		return fmt.Errorf(validateDateAfter, val, exp)
+	}
+}
+
+// DateBefore will ensure that a date/time, val, occurs before exp.
+func DateBefore(val, exp time.Time) ValidationFunc {
+	return func() error {
+		if val.Before(exp) {
+			return nil
+		}
+		return fmt.Errorf(validateDateBefore, val, exp)
 	}
 }
 

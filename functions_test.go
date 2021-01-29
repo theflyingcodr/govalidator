@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"testing"
+	"time"
 
 	"github.com/matryer/is"
 )
@@ -358,6 +359,127 @@ func TestMatchBytes(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			is := is.NewRelaxed(t)
 			is.Equal(test.expErr, MatchBytes(test.s, test.r)())
+		})
+	}
+}
+func TestBool(t *testing.T) {
+	is := is.New(t)
+	tt := map[string]struct {
+		val    bool
+		exp    bool
+		expErr error
+	}{
+		"val matching exp should pass": {
+			val: true,
+			exp: true,
+		}, "val matching false exp should pass": {
+			val: false,
+			exp: false,
+		}, "val not matching exp should fail": {
+			val:    true,
+			exp:    false,
+			expErr: fmt.Errorf(validateBool, true, false),
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is := is.NewRelaxed(t)
+			is.Equal(test.expErr, Bool(test.val, test.exp)())
+		})
+	}
+}
+
+func TestDateEqual(t *testing.T) {
+	is := is.New(t)
+	tt := map[string]struct {
+		val    time.Time
+		exp    time.Time
+		expErr error
+	}{
+		"date matching should pass": {
+			val: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+			exp: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+		},
+		"date not matching should fail": {
+			val: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+			exp: time.Date(2021, 1, 1, 1, 1, 1, 2, time.UTC),
+			expErr: fmt.Errorf(validateDateEqual,
+				time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+				time.Date(2021, 1, 1, 1, 1, 1, 2, time.UTC)),
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is := is.NewRelaxed(t)
+			is.Equal(test.expErr, DateEqual(test.val, test.exp)())
+		})
+	}
+}
+
+func TestDateBefore(t *testing.T) {
+	is := is.New(t)
+	tt := map[string]struct {
+		val    time.Time
+		exp    time.Time
+		expErr error
+	}{
+		"date before should pass": {
+			val: time.Date(2020, 1, 1, 1, 1, 1, 1, time.UTC),
+			exp: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+		},
+		"date matching exp should fail": {
+			val: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+			exp: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+			expErr: fmt.Errorf(validateDateBefore,
+				time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+				time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC)),
+		},
+		"date after exp should fail": {
+			val: time.Date(2022, 1, 1, 1, 1, 1, 1, time.UTC),
+			exp: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+			expErr: fmt.Errorf(validateDateBefore,
+				time.Date(2022, 1, 1, 1, 1, 1, 1, time.UTC),
+				time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC)),
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is := is.NewRelaxed(t)
+			is.Equal(test.expErr, DateBefore(test.val, test.exp)())
+		})
+	}
+}
+
+func TestDateAfter(t *testing.T) {
+	is := is.New(t)
+	tt := map[string]struct {
+		val    time.Time
+		exp    time.Time
+		expErr error
+	}{
+		"date after should pass": {
+			val: time.Date(2021, 1, 1, 1, 1, 1, 2, time.UTC),
+			exp: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+		},
+		"date matching exp should fail": {
+			val: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+			exp: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+			expErr: fmt.Errorf(validateDateAfter,
+				time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+				time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC)),
+		},
+		"date before exp should fail": {
+			val: time.Date(2022, 1, 1, 1, 1, 1, 1, time.UTC),
+			exp: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+			expErr: fmt.Errorf(validateDateAfter,
+				time.Date(2022, 1, 1, 1, 1, 1, 1, time.UTC),
+				time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC)),
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is := is.NewRelaxed(t)
+			is.Equal(test.expErr, DateBefore(test.val, test.exp)())
 		})
 	}
 }
