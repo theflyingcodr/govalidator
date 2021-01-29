@@ -4,8 +4,14 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
+)
+
+var (
+	reUKPostCode = regexp.MustCompile(`^[a-zA-Z]{1,2}\d[a-zA-Z\d]?\s*\d[a-zA-Z]{2}$`)
+	reZipCode    = regexp.MustCompile(`^(\d{5}(?:\-\d{4})?)$`)
 )
 
 const (
@@ -186,6 +192,7 @@ func NotEmpty(v interface{}) ValidationFunc {
 		}
 		val := reflect.ValueOf(v)
 		valid := false
+		unknown := false
 		switch val.Kind() {
 		case reflect.Array, reflect.Map, reflect.Slice:
 			valid = val.Len() > 0 && !val.IsNil()
@@ -200,11 +207,52 @@ func NotEmpty(v interface{}) ValidationFunc {
 		case reflect.Interface, reflect.Ptr:
 			valid = !val.IsNil()
 		default:
-			panic(fmt.Errorf("unsupported type %T", v))
+			unknown = true
+		}
+		if t, ok := v.(time.Time); ok {
+			unknown = false
+			valid = !t.IsZero()
+		}
+		// unknown type - panic - this should be false
+		if unknown {
+			panic(fmt.Sprintf("unsupported type %T", v))
 		}
 		if !valid {
 			return fmt.Errorf(validateEmpty)
 		}
 		return nil
+	}
+}
+
+// IsNumeric will pass if a string, val, is an Int.
+func IsNumeric(val string) ValidationFunc {
+	return func() error {
+		_, err := strconv.Atoi(val)
+		if err == nil {
+			return nil
+		}
+		return fmt.Errorf("%s is not a number", val)
+	}
+}
+
+// UKPostCode will validate that a string, val, is a valid UK PostCode.
+// It does not check the postcode exists, just that it matches an agreed pattern.
+func UKPostCode(val string) ValidationFunc {
+	return func() error {
+		if reUKPostCode.MatchString(val) {
+			return nil
+		}
+		return fmt.Errorf("%s is not a valid UK PostCode", val)
+	}
+}
+
+// ZipCode will validate that a string, val, matches a US ZipCode pattern.
+// It does not check the zipcode exists, just that it matches an agreed pattern.
+func ZipCode(val string) ValidationFunc {
+	return func() error {
+		if reZipCode.MatchString(val) {
+			return nil
+		}
+		return fmt.Errorf("%s is not a valid UK PostCode", val)
 	}
 }
