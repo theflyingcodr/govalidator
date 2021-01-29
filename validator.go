@@ -42,7 +42,7 @@ type Validator interface {
 // ValidationFunc defines a simple function that can be wrapped
 // and supplied with arguments.
 //
-// Typical useage is shown:
+// Typical usage is shown:
 //  func Length(val string, min, max int) ValidationFunc {
 //	    return func() error {
 //		    if len(val) >= min && len(val) <= max {
