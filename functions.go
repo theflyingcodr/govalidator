@@ -26,6 +26,8 @@ const (
 	validateDateEqual  = "the date/time provided %s, does not match the expected %s"
 	validateDateAfter  = "the date provided %s, must be after %s"
 	validateDateBefore = "the date provided %s, must be before %s"
+	validateUkPostCode = "%s is not a valid UK PostCode"
+	validateIsNumeric  = "string %s is not a number"
 )
 
 // Length will ensure a string, val, has a length that is at least min and
@@ -231,7 +233,7 @@ func IsNumeric(val string) ValidationFunc {
 		if err == nil {
 			return nil
 		}
-		return fmt.Errorf("%s is not a number", val)
+		return fmt.Errorf(validateIsNumeric, val)
 	}
 }
 
@@ -242,13 +244,13 @@ func UKPostCode(val string) ValidationFunc {
 		if reUKPostCode.MatchString(val) {
 			return nil
 		}
-		return fmt.Errorf("%s is not a valid UK PostCode", val)
+		return fmt.Errorf(validateUkPostCode, val)
 	}
 }
 
-// ZipCode will validate that a string, val, matches a US ZipCode pattern.
+// USZipCode will validate that a string, val, matches a US USZipCode pattern.
 // It does not check the zipcode exists, just that it matches an agreed pattern.
-func ZipCode(val string) ValidationFunc {
+func USZipCode(val string) ValidationFunc {
 	return func() error {
 		if reZipCode.MatchString(val) {
 			return nil

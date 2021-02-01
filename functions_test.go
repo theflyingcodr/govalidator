@@ -483,3 +483,83 @@ func TestDateAfter(t *testing.T) {
 		})
 	}
 }
+
+func TestIsNumeric(t *testing.T) {
+	tt := map[string]struct {
+		val    string
+		expErr error
+	}{
+		"valid number should pass": {
+			val: "12345",
+		},
+		"valid negative number should pass": {
+			val: "-12345",
+		},
+		"invalid number should fail": {
+			val:    "12345a",
+			expErr: fmt.Errorf(validateIsNumeric, "12345a"),
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is := is.NewRelaxed(t)
+			is.Equal(test.expErr, IsNumeric(test.val)())
+		})
+	}
+}
+
+func TestUKPostCode(t *testing.T) {
+	tt := map[string]struct {
+		val    []string
+		expErr error
+	}{
+		"Valid postcodes should pass": {
+			val: []string{"bt13 4GH", "NW1A 1AA", "A9A 9AA", "A9 9AA", "A99 9AA"},
+		},
+		"Invalid postcodes should fail": {
+			val:    []string{"GGG 7GH", "NW1A 1A", "N1 GF", "N11 DDD"},
+			expErr: fmt.Errorf(validateUkPostCode, "GGG 7GH"),
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is := is.NewRelaxed(t)
+			for _, p := range test.val {
+				err := UKPostCode(p)()
+				if test.expErr == nil {
+					is.NoErr(err)
+					continue
+				}
+				is.Equal(err != nil, true)
+			}
+		})
+	}
+}
+
+func TestZipCode(t *testing.T) {
+	tt := map[string]struct {
+		val    []string
+		expErr error
+	}{
+		"Valid zipcodes should pass": {
+			val: []string{"57501", "17101", "12201-7050", "99750-0077"},
+		},
+		"Invalid zipcodes should fail": {
+			val:    []string{"GGG 7GH", "99750-00", "99750-0", "99750-", "1111"},
+			expErr: fmt.Errorf(validateUkPostCode, "GGG 7GH"),
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is := is.NewRelaxed(t)
+			for _, p := range test.val {
+				err := USZipCode(p)()
+				if test.expErr == nil {
+					is.NoErr(err)
+					continue
+				}
+				is.Equal(err != nil, true)
+			}
+		})
+	}
+}
