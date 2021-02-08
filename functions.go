@@ -1,6 +1,8 @@
 package validator
 
 import (
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"reflect"
 	"regexp"
@@ -16,7 +18,7 @@ var (
 
 const (
 	validateEmpty      = "value cannot be empty"
-	validateLength     = "value %s must be between %d and %d"
+	validateLength     = "value must be between %d and %d characters"
 	validateMin        = "value %d is smaller than minimum %d"
 	validateMax        = "value %d is larger than maximum %d"
 	validateNumBetween = "value %d must be between %d and %d"
@@ -35,7 +37,7 @@ func Length(val string, min, max int) ValidationFunc {
 		if len(val) >= min && len(val) <= max {
 			return nil
 		}
-		return fmt.Errorf(validateLength, val, min, max)
+		return fmt.Errorf(validateLength, min, max)
 	}
 }
 
@@ -254,5 +256,35 @@ func ZipCode(val string) ValidationFunc {
 			return nil
 		}
 		return fmt.Errorf("%s is not a valid UK PostCode", val)
+	}
+}
+
+// HasPrefix ensures string, val, has a prefix matching prefix.
+func HasPrefix(val, prefix string) ValidationFunc {
+	return func() error {
+		if strings.HasPrefix(val, prefix){
+			return nil
+		}
+		return fmt.Errorf("value provided does not have a valid prefix")
+	}
+}
+
+// NoPrefix ensures a string, val, does not have the supplied prefix.
+func NoPrefix(val, prefix string) ValidationFunc {
+	return func() error {
+		if strings.HasPrefix(val, prefix){
+			return errors.New("value provided does not have a valid prefix")
+		}
+		return nil
+	}
+}
+
+// IsHex will check that a string, val, is valid Hexadecimal.
+func IsHex(val string) ValidationFunc{
+	return func() error{
+		if _, err := hex.DecodeString(val); err != nil {
+			return errors.New("value supplied is not valid hex")
+		}
+		return nil
 	}
 }
