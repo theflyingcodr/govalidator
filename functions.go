@@ -195,6 +195,7 @@ func NotEmpty(v interface{}) ValidationFunc {
 		val := reflect.ValueOf(v)
 		valid := false
 		unknown := false
+		// nolint:exhaustive // not supporting everything
 		switch val.Kind() {
 		case reflect.Array, reflect.Map, reflect.Slice:
 			valid = val.Len() > 0 && !val.IsNil()

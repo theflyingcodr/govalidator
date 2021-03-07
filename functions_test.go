@@ -10,6 +10,7 @@ import (
 )
 
 func TestLength(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		s      string
@@ -47,13 +48,14 @@ func TestLength(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, Length(test.s, test.minLen, test.maxLen)())
 		})
 	}
 }
 
 func TestMinInt(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		i      int
@@ -76,13 +78,14 @@ func TestMinInt(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, MinInt(test.i, test.min)())
 		})
 	}
 }
 
 func TestMaxInt(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		i      int
@@ -105,13 +108,14 @@ func TestMaxInt(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, MaxInt(test.i, test.max)())
 		})
 	}
 }
 
 func TestBetweenInt(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		i      int
@@ -148,13 +152,14 @@ func TestBetweenInt(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, BetweenInt(test.i, test.min, test.max)())
 		})
 	}
 }
 
 func TestMinInt64(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		i      int64
@@ -177,13 +182,14 @@ func TestMinInt64(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, MinInt64(test.i, test.min)())
 		})
 	}
 }
 
 func TestMaxInt64(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		i      int64
@@ -206,13 +212,14 @@ func TestMaxInt64(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, MaxInt64(test.i, test.max)())
 		})
 	}
 }
 
 func TestBetweenInt64(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		i      int64
@@ -249,13 +256,14 @@ func TestBetweenInt64(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, BetweenInt64(test.i, test.min, test.max)())
 		})
 	}
 }
 
 func TestPositiveInt(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		i      int
@@ -274,13 +282,14 @@ func TestPositiveInt(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, PositiveInt(test.i)())
 		})
 	}
 }
 
 func TestPositiveInt64(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		i      int64
@@ -299,13 +308,14 @@ func TestPositiveInt64(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, PositiveInt64(test.i)())
 		})
 	}
 }
 
 func TestMatchString(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		s      string
@@ -328,13 +338,14 @@ func TestMatchString(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, MatchString(test.s, test.r)())
 		})
 	}
 }
 
 func TestMatchBytes(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		s      []byte
@@ -357,12 +368,13 @@ func TestMatchBytes(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, MatchBytes(test.s, test.r)())
 		})
 	}
 }
 func TestBool(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		val    bool
@@ -383,13 +395,14 @@ func TestBool(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, Bool(test.val, test.exp)())
 		})
 	}
 }
 
 func TestDateEqual(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		val    time.Time
@@ -410,13 +423,14 @@ func TestDateEqual(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, DateEqual(test.val, test.exp)())
 		})
 	}
 }
 
 func TestDateBefore(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		val    time.Time
@@ -444,13 +458,14 @@ func TestDateBefore(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, DateBefore(test.val, test.exp)())
 		})
 	}
 }
 
 func TestDateAfter(t *testing.T) {
+	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
 		val    time.Time
@@ -478,13 +493,15 @@ func TestDateAfter(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, DateAfter(test.val, test.exp)())
 		})
 	}
 }
 
 func TestIsNumeric(t *testing.T) {
+	t.Parallel()
+	is := is.New(t)
 	tt := map[string]struct {
 		val    string
 		expErr error
@@ -502,13 +519,15 @@ func TestIsNumeric(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			is.Equal(test.expErr, IsNumeric(test.val)())
 		})
 	}
 }
 
 func TestUKPostCode(t *testing.T) {
+	t.Parallel()
+	is := is.New(t)
 	tt := map[string]struct {
 		val    []string
 		expErr error
@@ -523,7 +542,7 @@ func TestUKPostCode(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			for _, p := range test.val {
 				err := UKPostCode(p)()
 				if test.expErr == nil {
@@ -537,6 +556,8 @@ func TestUKPostCode(t *testing.T) {
 }
 
 func TestZipCode(t *testing.T) {
+	t.Parallel()
+	is := is.New(t)
 	tt := map[string]struct {
 		val    []string
 		expErr error
@@ -551,7 +572,7 @@ func TestZipCode(t *testing.T) {
 	}
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
-			is := is.NewRelaxed(t)
+			is = is.NewRelaxed(t)
 			for _, p := range test.val {
 				err := USZipCode(p)()
 				if test.expErr == nil {
