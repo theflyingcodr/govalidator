@@ -113,7 +113,7 @@ func MinUInt64(val, min uint64) ValidationFunc {
 	}
 }
 
-// MaxInt64 will ensure an Int64, val, is at most Max in value.
+// MaxUInt64 will ensure an Int64, val, is at most Max in value.
 func MaxUInt64(val, max uint64) ValidationFunc {
 	return func() error {
 		if val <= max {
@@ -123,7 +123,7 @@ func MaxUInt64(val, max uint64) ValidationFunc {
 	}
 }
 
-// BetweenInt64 will ensure an int64, val, is at least min and at most max.
+// BetweenUInt64 will ensure an int64, val, is at least min and at most max.
 func BetweenUInt64(val, min, max uint64) ValidationFunc {
 	return func() error {
 		if val >= min && val <= max {
@@ -305,7 +305,7 @@ func USZipCode(val string) ValidationFunc {
 // HasPrefix ensures string, val, has a prefix matching prefix.
 func HasPrefix(val, prefix string) ValidationFunc {
 	return func() error {
-		if strings.HasPrefix(val, prefix){
+		if strings.HasPrefix(val, prefix) {
 			return nil
 		}
 		return fmt.Errorf("value provided does not have a valid prefix")
@@ -315,7 +315,7 @@ func HasPrefix(val, prefix string) ValidationFunc {
 // NoPrefix ensures a string, val, does not have the supplied prefix.
 func NoPrefix(val, prefix string) ValidationFunc {
 	return func() error {
-		if strings.HasPrefix(val, prefix){
+		if strings.HasPrefix(val, prefix) {
 			return errors.New("value provided does not have a valid prefix")
 		}
 		return nil
@@ -323,8 +323,8 @@ func NoPrefix(val, prefix string) ValidationFunc {
 }
 
 // IsHex will check that a string, val, is valid Hexadecimal.
-func IsHex(val string) ValidationFunc{
-	return func() error{
+func IsHex(val string) ValidationFunc {
+	return func() error {
 		if _, err := hex.DecodeString(val); err != nil {
 			return errors.New("value supplied is not valid hex")
 		}
