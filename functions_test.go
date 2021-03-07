@@ -37,13 +37,13 @@ func TestLength(t *testing.T) {
 			s:      "hi there",
 			minLen: 50,
 			maxLen: 80,
-			expErr: fmt.Errorf(validateLength, "hi there", 50, 80),
+			expErr: fmt.Errorf(validateLength, 50, 80),
 		},
 		"string too large": {
 			s:      "hi there",
 			minLen: 1,
 			maxLen: 4,
-			expErr: fmt.Errorf(validateLength, "hi there", 1, 4),
+			expErr: fmt.Errorf(validateLength,  1, 4),
 		},
 	}
 	for name, test := range tt {

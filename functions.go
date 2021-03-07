@@ -1,6 +1,8 @@
 package validator
 
 import (
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"reflect"
 	"regexp"
@@ -16,7 +18,7 @@ var (
 
 const (
 	validateEmpty      = "value cannot be empty"
-	validateLength     = "value %s must be between %d and %d"
+	validateLength     = "value must be between %d and %d characters"
 	validateMin        = "value %d is smaller than minimum %d"
 	validateMax        = "value %d is larger than maximum %d"
 	validateNumBetween = "value %d must be between %d and %d"
@@ -37,7 +39,7 @@ func Length(val string, min, max int) ValidationFunc {
 		if len(val) >= min && len(val) <= max {
 			return nil
 		}
-		return fmt.Errorf(validateLength, val, min, max)
+		return fmt.Errorf(validateLength, min, max)
 	}
 }
 
@@ -101,6 +103,36 @@ func BetweenInt64(val, min, max int64) ValidationFunc {
 	}
 }
 
+// MinUInt64 will ensure an uint64, val, is at least min in value.
+func MinUInt64(val, min uint64) ValidationFunc {
+	return func() error {
+		if val >= min {
+			return nil
+		}
+		return fmt.Errorf(validateMin, val, min)
+	}
+}
+
+// MaxInt64 will ensure an Int64, val, is at most Max in value.
+func MaxUInt64(val, max uint64) ValidationFunc {
+	return func() error {
+		if val <= max {
+			return nil
+		}
+		return fmt.Errorf(validateMax, val, max)
+	}
+}
+
+// BetweenInt64 will ensure an int64, val, is at least min and at most max.
+func BetweenUInt64(val, min, max uint64) ValidationFunc {
+	return func() error {
+		if val >= min && val <= max {
+			return nil
+		}
+		return fmt.Errorf(validateNumBetween, val, min, max)
+	}
+}
+
 // PositiveInt will ensure an int, val, is > 0.
 func PositiveInt(val int) ValidationFunc {
 	return func() error {
@@ -113,6 +145,16 @@ func PositiveInt(val int) ValidationFunc {
 
 // PositiveInt64 will ensure an int64, val, is > 0.
 func PositiveInt64(val int64) ValidationFunc {
+	return func() error {
+		if val > 0 {
+			return nil
+		}
+		return fmt.Errorf("value %d should be greater than 0", val)
+	}
+}
+
+// PositiveUInt64 will ensure an uint64, val, is > 0.
+func PositiveUInt64(val uint64) ValidationFunc {
 	return func() error {
 		if val > 0 {
 			return nil
@@ -257,5 +299,35 @@ func USZipCode(val string) ValidationFunc {
 			return nil
 		}
 		return fmt.Errorf("%s is not a valid UK PostCode", val)
+	}
+}
+
+// HasPrefix ensures string, val, has a prefix matching prefix.
+func HasPrefix(val, prefix string) ValidationFunc {
+	return func() error {
+		if strings.HasPrefix(val, prefix){
+			return nil
+		}
+		return fmt.Errorf("value provided does not have a valid prefix")
+	}
+}
+
+// NoPrefix ensures a string, val, does not have the supplied prefix.
+func NoPrefix(val, prefix string) ValidationFunc {
+	return func() error {
+		if strings.HasPrefix(val, prefix){
+			return errors.New("value provided does not have a valid prefix")
+		}
+		return nil
+	}
+}
+
+// IsHex will check that a string, val, is valid Hexadecimal.
+func IsHex(val string) ValidationFunc{
+	return func() error{
+		if _, err := hex.DecodeString(val); err != nil {
+			return errors.New("value supplied is not valid hex")
+		}
+		return nil
 	}
 }
