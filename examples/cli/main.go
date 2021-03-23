@@ -17,7 +17,7 @@ func main() {
 	flag.IntVar(&total, "total", 0, "an amount of something or other, who knows")
 	flag.Parse()
 	if err := validator.New().
-		Validate("name", validator.Length(name, 1, 20)).
+		Validate("name", validator.StrLength(name, 1, 20)).
 		Validate("amount", validator.MinInt(total, 10)).Err(); err != nil {
 		fmt.Println(err)
 		flag.PrintDefaults()

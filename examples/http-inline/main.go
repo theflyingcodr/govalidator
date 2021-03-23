@@ -36,7 +36,7 @@ func main() {
 				return
 			}
 			if err := validator.New().
-				Validate("name", validator.Length(req.Name, 4, 10)).
+				Validate("name", validator.StrLength(req.Name, 4, 10)).
 				Validate("dob", validator.NotEmpty(req.DOB), validator.DateBefore(req.DOB, time.Now().AddDate(-16, 0, 0))).
 				Validate("isEnabled", validator.Bool(req.IsEnabled, false)).
 				Validate("count", validator.PositiveInt(req.Count)).Err(); err != nil {

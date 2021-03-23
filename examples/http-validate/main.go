@@ -32,7 +32,7 @@ type Request struct {
 // Validate implements validator.Validator and evaluates Request.
 func (r *Request) Validate() validator.ErrValidation {
 	return validator.New().
-		Validate("name", validator.Length(r.Name, 4, 10)).
+		Validate("name", validator.StrLength(r.Name, 4, 10)).
 		Validate("dob", validator.NotEmpty(r.DOB), validator.DateBefore(r.DOB, time.Now().AddDate(-16, 0, 0))).
 		Validate("isEnabled", validator.Bool(r.IsEnabled, false)).
 		Validate("count", validator.PositiveInt(r.Count))
