@@ -48,7 +48,7 @@ func TestLength(t *testing.T) {
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is := is.NewRelaxed(t)
-			is.Equal(test.expErr, Length(test.s, test.minLen, test.maxLen)())
+			is.Equal(test.expErr, StrLength(test.s, test.minLen, test.maxLen)())
 		})
 	}
 }
