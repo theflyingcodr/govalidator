@@ -29,6 +29,8 @@ const (
 	validateDateEqual  = "the date/time provided %s, does not match the expected %s"
 	validateDateAfter  = "the date provided %s, must be after %s"
 	validateDateBefore = "the date provided %s, must be before %s"
+	validateUkPostCode = "%s is not a valid UK PostCode"
+	validateIsNumeric  = "string %s is not a number"
 )
 
 // StrLength will ensure a string, val, has a length that is at least min and
@@ -122,7 +124,7 @@ func MinUInt64(val, min uint64) ValidationFunc {
 	}
 }
 
-// MaxInt64 will ensure an Int64, val, is at most Max in value.
+// MaxUInt64 will ensure an Int64, val, is at most Max in value.
 func MaxUInt64(val, max uint64) ValidationFunc {
 	return func() error {
 		if val <= max {
@@ -132,7 +134,7 @@ func MaxUInt64(val, max uint64) ValidationFunc {
 	}
 }
 
-// BetweenInt64 will ensure an int64, val, is at least min and at most max.
+// BetweenUInt64 will ensure an int64, val, is at least min and at most max.
 func BetweenUInt64(val, min, max uint64) ValidationFunc {
 	return func() error {
 		if val >= min && val <= max {
@@ -246,6 +248,7 @@ func NotEmpty(v interface{}) ValidationFunc {
 		val := reflect.ValueOf(v)
 		valid := false
 		unknown := false
+		// nolint:exhaustive // not supporting everything
 		switch val.Kind() {
 		case reflect.Array, reflect.Map, reflect.Slice:
 			valid = val.Len() > 0 && !val.IsNil()
@@ -284,7 +287,7 @@ func IsNumeric(val string) ValidationFunc {
 		if err == nil {
 			return nil
 		}
-		return fmt.Errorf("%s is not a number", val)
+		return fmt.Errorf(validateIsNumeric, val)
 	}
 }
 
@@ -295,13 +298,13 @@ func UKPostCode(val string) ValidationFunc {
 		if reUKPostCode.MatchString(val) {
 			return nil
 		}
-		return fmt.Errorf("%s is not a valid UK PostCode", val)
+		return fmt.Errorf(validateUkPostCode, val)
 	}
 }
 
-// ZipCode will validate that a string, val, matches a US ZipCode pattern.
+// USZipCode will validate that a string, val, matches a US USZipCode pattern.
 // It does not check the zipcode exists, just that it matches an agreed pattern.
-func ZipCode(val string) ValidationFunc {
+func USZipCode(val string) ValidationFunc {
 	return func() error {
 		if reZipCode.MatchString(val) {
 			return nil
@@ -313,7 +316,7 @@ func ZipCode(val string) ValidationFunc {
 // HasPrefix ensures string, val, has a prefix matching prefix.
 func HasPrefix(val, prefix string) ValidationFunc {
 	return func() error {
-		if strings.HasPrefix(val, prefix){
+		if strings.HasPrefix(val, prefix) {
 			return nil
 		}
 		return fmt.Errorf("value provided does not have a valid prefix")
@@ -323,7 +326,7 @@ func HasPrefix(val, prefix string) ValidationFunc {
 // NoPrefix ensures a string, val, does not have the supplied prefix.
 func NoPrefix(val, prefix string) ValidationFunc {
 	return func() error {
-		if strings.HasPrefix(val, prefix){
+		if strings.HasPrefix(val, prefix) {
 			return errors.New("value provided does not have a valid prefix")
 		}
 		return nil
@@ -331,8 +334,8 @@ func NoPrefix(val, prefix string) ValidationFunc {
 }
 
 // IsHex will check that a string, val, is valid Hexadecimal.
-func IsHex(val string) ValidationFunc{
-	return func() error{
+func IsHex(val string) ValidationFunc {
+	return func() error {
 		if _, err := hex.DecodeString(val); err != nil {
 			return errors.New("value supplied is not valid hex")
 		}
