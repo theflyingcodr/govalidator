@@ -43,7 +43,7 @@ func TestLength(t *testing.T) {
 			s:      "hi there",
 			minLen: 1,
 			maxLen: 4,
-			expErr: fmt.Errorf(validateLength,  1, 4),
+			expErr: fmt.Errorf(validateLength, 1, 4),
 		},
 	}
 	for name, test := range tt {
@@ -581,6 +581,33 @@ func TestZipCode(t *testing.T) {
 				}
 				is.Equal(err != nil, true)
 			}
+		})
+	}
+}
+
+func TestEmail(t *testing.T) {
+	t.Parallel()
+	is := is.New(t)
+	tt := map[string]struct {
+		val    string
+		expErr error
+	}{
+		"email without a domain should fail": {
+			val:    "test@",
+			expErr: fmt.Errorf(validateEmail),
+		},
+		"email without a prefix": {
+			val:    "@test.com",
+			expErr: fmt.Errorf(validateEmail),
+		},
+		"emails are not required to have a tld so will pass": {
+			val: "test@mail",
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is = is.NewRelaxed(t)
+			is.Equal(test.expErr, Email(test.val)())
 		})
 	}
 }
