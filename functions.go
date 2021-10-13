@@ -264,7 +264,7 @@ func NotEmpty(v interface{}) ValidationFunc {
 	}
 }
 
-// Empty will ensure that a value, val, is not empty.
+// Empty will ensure that a value, val, is empty.
 // rules are:
 // int: == 0
 // string: == "" or whitespace
