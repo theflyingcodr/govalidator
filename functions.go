@@ -19,6 +19,7 @@ var (
 
 const (
 	validateEmpty       = "value cannot be empty"
+	validateNotEmpty    = "value must be empty"
 	validateLength      = "value must be between %d and %d characters"
 	validateExactLength = "value should be exactly %d characters"
 	validateMin         = "value %d is smaller than minimum %d"
@@ -249,34 +250,31 @@ func NotEmpty(v interface{}) ValidationFunc {
 		}
 		val := reflect.ValueOf(v)
 		valid := false
-		unknown := false
 		// nolint:exhaustive // not supporting everything
 		switch val.Kind() {
-		case reflect.Array, reflect.Map, reflect.Slice:
+		case reflect.Map, reflect.Slice:
 			valid = val.Len() > 0 && !val.IsNil()
-		case reflect.String:
-			valid = len(strings.TrimSpace(val.String())) > 0
-		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			valid = val.Int() > 0
-		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
-			valid = val.Uint() > 0
-		case reflect.Float32, reflect.Float64:
-			valid = val.Float() > 0
-		case reflect.Interface, reflect.Ptr:
-			valid = !val.IsNil()
 		default:
-			unknown = true
-		}
-		if t, ok := v.(time.Time); ok {
-			unknown = false
-			valid = !t.IsZero()
-		}
-		// unknown type - panic - this should be false
-		if unknown {
-			panic(fmt.Sprintf("unsupported type %T", v))
+			valid = !val.IsZero()
 		}
 		if !valid {
 			return fmt.Errorf(validateEmpty)
+		}
+		return nil
+	}
+}
+
+// Empty will ensure that a value, val, is empty.
+// rules are:
+// int: == 0
+// string: == "" or whitespace
+// slice: is nil or len == 0
+// map: is nil and len == 0
+func Empty(v interface{}) ValidationFunc {
+	return func() error {
+		err := NotEmpty(v)()
+		if err == nil {
+			return fmt.Errorf(validateNotEmpty)
 		}
 		return nil
 	}
@@ -352,5 +350,18 @@ func Email(val string) ValidationFunc {
 			return errors.New(validateEmail)
 		}
 		return nil
+	}
+}
+
+// AnyString will check if the provided string is in a set of allowed values.
+func AnyString(val string, vv ...string) ValidationFunc {
+	return func() error {
+		for _, v := range vv {
+			if val == v {
+				return nil
+			}
+		}
+
+		return errors.New("value not found in allowed values")
 	}
 }
