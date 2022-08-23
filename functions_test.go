@@ -1,6 +1,7 @@
 package validator
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"testing"
@@ -658,6 +659,348 @@ func TestZipCode(t *testing.T) {
 				}
 				is.Equal(err != nil, true)
 			}
+		})
+	}
+}
+
+func TestEmail(t *testing.T) {
+	t.Parallel()
+	is := is.New(t)
+	tt := map[string]struct {
+		val    string
+		expErr error
+	}{
+		"email without a domain should fail": {
+			val:    "test@",
+			expErr: fmt.Errorf(validateEmail),
+		},
+		"email without a prefix": {
+			val:    "@test.com",
+			expErr: fmt.Errorf(validateEmail),
+		},
+		"emails are not required to have a tld so will pass": {
+			val: "test@mail",
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is = is.NewRelaxed(t)
+			is.Equal(test.expErr, Email(test.val)())
+		})
+	}
+}
+
+func TestNotEmpty(t *testing.T) {
+	t.Parallel()
+	is := is.New(t)
+	tt := map[string]struct {
+		val    interface{}
+		expErr error
+	}{
+		"nil ptr": {
+			val:    nil,
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty string": {
+			val: "hello",
+		},
+		"empty string": {
+			val:    "",
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty time": {
+			val: time.Now(),
+		},
+		"empty time": {
+			val:    time.Time{},
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty int": {
+			val: 235,
+		},
+		"empty int": {
+			val:    0,
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty int8": {
+			val: int8(5),
+		},
+		"empty int8": {
+			val:    int8(0),
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty int16": {
+			val: int16(5),
+		},
+		"empty int16": {
+			val:    int16(0),
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty int32": {
+			val: int32(5),
+		},
+		"empty int32": {
+			val:    int32(0),
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty int64": {
+			val: int64(5),
+		},
+		"empty int64": {
+			val:    int64(0),
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty uint": {
+			val: 235,
+		},
+		"empty uint": {
+			val:    0,
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty uint8": {
+			val: uint8(5),
+		},
+		"empty uint8": {
+			val:    uint8(0),
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty uint16": {
+			val: uint16(5),
+		},
+		"empty uint16": {
+			val:    uint16(0),
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty uint32": {
+			val: uint32(5),
+		},
+		"empty uint32": {
+			val:    uint32(0),
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty uint64": {
+			val: uint64(5),
+		},
+		"empty uint64": {
+			val:    uint64(0),
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty float32": {
+			val: float32(5),
+		},
+		"empty float32": {
+			val:    float32(0),
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty float64": {
+			val: float64(5),
+		},
+		"empty float64": {
+			val:    float64(0),
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty array": {
+			val: [2]string{"hello", "there"},
+		},
+		"empty array": {
+			val:    [2]string{"", ""},
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty slice": {
+			val: []string{"hello", "there"},
+		},
+		"empty slice": {
+			val:    []string{},
+			expErr: errors.New(validateEmpty),
+		},
+		"non-empty map": {
+			val: map[string]string{"hello": "there"},
+		},
+		"empty map": {
+			val:    map[string]string{},
+			expErr: errors.New(validateEmpty),
+		},
+	}
+
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is = is.NewRelaxed(t)
+			is.Equal(test.expErr, NotEmpty(test.val)())
+		})
+	}
+}
+
+func TestEmpty(t *testing.T) {
+	t.Parallel()
+	is := is.New(t)
+	tt := map[string]struct {
+		val    interface{}
+		expErr error
+	}{
+		"nil ptr": {
+			val: nil,
+		},
+		"non-empty string": {
+			val:    "hello",
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty string": {
+			val: "",
+		},
+		"non-empty time": {
+			val:    time.Now(),
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty time": {
+			val: time.Time{},
+		},
+		"non-empty int": {
+			val:    235,
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty int": {
+			val: 0,
+		},
+		"non-empty int8": {
+			val:    int8(5),
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty int8": {
+			val: int8(0),
+		},
+		"non-empty int16": {
+			val:    int16(5),
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty int16": {
+			val: int16(0),
+		},
+		"non-empty int32": {
+			val:    int32(5),
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty int32": {
+			val: int32(0),
+		},
+		"non-empty int64": {
+			val:    int64(5),
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty int64": {
+			val: int64(0),
+		},
+		"non-empty uint": {
+			val:    235,
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty uint": {
+			val: 0,
+		},
+		"non-empty uint8": {
+			val:    uint8(5),
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty uint8": {
+			val: uint8(0),
+		},
+		"non-empty uint16": {
+			val:    uint16(5),
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty uint16": {
+			val: uint16(0),
+		},
+		"non-empty uint32": {
+			val:    uint32(5),
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty uint32": {
+			val: uint32(0),
+		},
+		"non-empty uint64": {
+			val:    uint64(5),
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty uint64": {
+			val: uint64(0),
+		},
+		"non-empty float32": {
+			val:    float32(5),
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty float32": {
+			val: float32(0),
+		},
+		"non-empty float64": {
+			val:    float64(5),
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty float64": {
+			val: float64(0),
+		},
+		"non-empty array": {
+			val:    [2]string{"hello", "there"},
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty array": {
+			val: [2]string{"", ""},
+		},
+		"non-empty slice": {
+			val:    []string{"hello", "there"},
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty slice": {
+			val: []string{},
+		},
+		"non-empty map": {
+			val:    map[string]string{"hello": "there"},
+			expErr: errors.New(validateNotEmpty),
+		},
+		"empty map": {
+			val: map[string]string{},
+		},
+	}
+
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is = is.NewRelaxed(t)
+			is.Equal(test.expErr, Empty(test.val)())
+		})
+	}
+}
+
+func TestAnyString(t *testing.T) {
+	t.Parallel()
+	is := is.New(t)
+	tt := map[string]struct {
+		val    string
+		list   []string
+		expErr error
+	}{
+		"matching item": {
+			val:  "hello",
+			list: []string{"wow", "hello", "ohwow"},
+		},
+		"missing item": {
+			val:    "hello",
+			list:   []string{"wow", "goodbye", "ohwow"},
+			expErr: errors.New("value not found in allowed values"),
+		},
+		"empty string found": {
+			val:  "",
+			list: []string{"wow", "", "ohwow"},
+		},
+		"empty string not found": {
+			val:    "",
+			list:   []string{"wow", "ohwow"},
+			expErr: errors.New("value not found in allowed values"),
+		},
+	}
+
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is = is.NewRelaxed(t)
+			is.Equal(test.expErr, AnyString(test.val, test.list...)())
 		})
 	}
 }
