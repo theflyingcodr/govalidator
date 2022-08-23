@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"golang.org/x/exp/constraints"
 )
 
 var (
@@ -17,20 +19,20 @@ var (
 )
 
 const (
-	validateEmpty      = "value cannot be empty"
-	validateLength     = "value must be between %d and %d characters"
-	validateExactLength     = "value should be exactly %d characters"
-	validateMin        = "value %d is smaller than minimum %d"
-	validateMax        = "value %d is larger than maximum %d"
-	validateNumBetween = "value %d must be between %d and %d"
-	validatePositive   = "value %d should be greater than 0"
-	validateRegex      = "value %s failed to meet requirements"
-	validateBool       = "value %v does not evaluate to %v"
-	validateDateEqual  = "the date/time provided %s, does not match the expected %s"
-	validateDateAfter  = "the date provided %s, must be after %s"
-	validateDateBefore = "the date provided %s, must be before %s"
-	validateUkPostCode = "%s is not a valid UK PostCode"
-	validateIsNumeric  = "string %s is not a number"
+	validateEmpty       = "value cannot be empty"
+	validateLength      = "value must be between %d and %d characters"
+	validateExactLength = "value should be exactly %d characters"
+	validateMin         = "value %v is smaller than minimum %v"
+	validateMax         = "value %v is larger than maximum %v"
+	validateNumBetween  = "value %v must be between %v and %v"
+	validatePositive    = "value %v should be greater than 0"
+	validateRegex       = "value %s failed to meet requirements"
+	validateBool        = "value %v does not evaluate to %v"
+	validateDateEqual   = "the date/time provided %s, does not match the expected %s"
+	validateDateAfter   = "the date provided %s, must be after %s"
+	validateDateBefore  = "the date provided %s, must be before %s"
+	validateUkPostCode  = "%s is not a valid UK PostCode"
+	validateIsNumeric   = "string %s is not a number"
 )
 
 // StrLength will ensure a string, val, has a length that is at least min and
@@ -45,7 +47,7 @@ func StrLength(val string, min, max int) ValidationFunc {
 }
 
 // StrLengthExact will ensure a string, val, is exactly length.
-func StrLengthExact(val string,length int) ValidationFunc {
+func StrLengthExact(val string, length int) ValidationFunc {
 	return func() error {
 		if len(val) == length {
 			return nil
@@ -54,8 +56,13 @@ func StrLengthExact(val string,length int) ValidationFunc {
 	}
 }
 
-// MinInt will ensure an Int, val, is at least min in value.
-func MinInt(val, min int) ValidationFunc {
+// Number defines all number types.
+type Number interface {
+	constraints.Integer | constraints.Float
+}
+
+// MinNumber will ensure a Number, val, is at least min in value.
+func MinNumber[T Number](val, min T) ValidationFunc {
 	return func() error {
 		if val >= min {
 			return nil
@@ -64,8 +71,8 @@ func MinInt(val, min int) ValidationFunc {
 	}
 }
 
-// MaxInt will ensure an Int, val,  is at most Max in value.
-func MaxInt(val, max int) ValidationFunc {
+// MaxNumber will ensure an Int, val,  is at most Max in value.
+func MaxNumber[T Number](val, max T) ValidationFunc {
 	return func() error {
 		if val <= max {
 			return nil
@@ -74,8 +81,8 @@ func MaxInt(val, max int) ValidationFunc {
 	}
 }
 
-// BetweenInt will ensure an int, val,  is at least min and at most max.
-func BetweenInt(val, min, max int) ValidationFunc {
+// BetweenNumber will ensure an int, val, is at least min and at most max.
+func BetweenNumber[T Number](val, min, max T) ValidationFunc {
 	return func() error {
 		if val >= min && val <= max {
 			return nil
@@ -84,93 +91,13 @@ func BetweenInt(val, min, max int) ValidationFunc {
 	}
 }
 
-// MinInt64 will ensure an Int64, val, is at least min in value.
-func MinInt64(val, min int64) ValidationFunc {
-	return func() error {
-		if val >= min {
-			return nil
-		}
-		return fmt.Errorf(validateMin, val, min)
-	}
-}
-
-// MaxInt64 will ensure an Int64, val, is at most Max in value.
-func MaxInt64(val, max int64) ValidationFunc {
-	return func() error {
-		if val <= max {
-			return nil
-		}
-		return fmt.Errorf(validateMax, val, max)
-	}
-}
-
-// BetweenInt64 will ensure an int64, val, is at least min and at most max.
-func BetweenInt64(val, min, max int64) ValidationFunc {
-	return func() error {
-		if val >= min && val <= max {
-			return nil
-		}
-		return fmt.Errorf(validateNumBetween, val, min, max)
-	}
-}
-
-// MinUInt64 will ensure an uint64, val, is at least min in value.
-func MinUInt64(val, min uint64) ValidationFunc {
-	return func() error {
-		if val >= min {
-			return nil
-		}
-		return fmt.Errorf(validateMin, val, min)
-	}
-}
-
-// MaxUInt64 will ensure an Int64, val, is at most Max in value.
-func MaxUInt64(val, max uint64) ValidationFunc {
-	return func() error {
-		if val <= max {
-			return nil
-		}
-		return fmt.Errorf(validateMax, val, max)
-	}
-}
-
-// BetweenUInt64 will ensure an int64, val, is at least min and at most max.
-func BetweenUInt64(val, min, max uint64) ValidationFunc {
-	return func() error {
-		if val >= min && val <= max {
-			return nil
-		}
-		return fmt.Errorf(validateNumBetween, val, min, max)
-	}
-}
-
-// PositiveInt will ensure an int, val, is > 0.
-func PositiveInt(val int) ValidationFunc {
+// PositiveNumber will ensure an int, val, is > 0.
+func PositiveNumber[T Number](val T) ValidationFunc {
 	return func() error {
 		if val > 0 {
 			return nil
 		}
 		return fmt.Errorf(validatePositive, val)
-	}
-}
-
-// PositiveInt64 will ensure an int64, val, is > 0.
-func PositiveInt64(val int64) ValidationFunc {
-	return func() error {
-		if val > 0 {
-			return nil
-		}
-		return fmt.Errorf("value %d should be greater than 0", val)
-	}
-}
-
-// PositiveUInt64 will ensure an uint64, val, is > 0.
-func PositiveUInt64(val uint64) ValidationFunc {
-	return func() error {
-		if val > 0 {
-			return nil
-		}
-		return fmt.Errorf("value %d should be greater than 0", val)
 	}
 }
 
@@ -194,8 +121,8 @@ func MatchBytes(val []byte, r *regexp.Regexp) ValidationFunc {
 	}
 }
 
-// Bool is a simple check to ensure that val matches either true / false as defined by exp.
-func Bool(val, exp bool) ValidationFunc {
+// Equal is a simple check to ensure that val matches exp.
+func Equal[T comparable](val, exp T) ValidationFunc {
 	return func() error {
 		if val == exp {
 			return nil

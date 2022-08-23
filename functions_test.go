@@ -43,7 +43,7 @@ func TestLength(t *testing.T) {
 			s:      "hi there",
 			minLen: 1,
 			maxLen: 4,
-			expErr: fmt.Errorf(validateLength,  1, 4),
+			expErr: fmt.Errorf(validateLength, 1, 4),
 		},
 	}
 	for name, test := range tt {
@@ -79,7 +79,7 @@ func TestMinInt(t *testing.T) {
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is = is.NewRelaxed(t)
-			is.Equal(test.expErr, MinInt(test.i, test.min)())
+			is.Equal(test.expErr, MinNumber(test.i, test.min)())
 		})
 	}
 }
@@ -109,7 +109,7 @@ func TestMaxInt(t *testing.T) {
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is = is.NewRelaxed(t)
-			is.Equal(test.expErr, MaxInt(test.i, test.max)())
+			is.Equal(test.expErr, MaxNumber(test.i, test.max)())
 		})
 	}
 }
@@ -153,7 +153,7 @@ func TestBetweenInt(t *testing.T) {
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is = is.NewRelaxed(t)
-			is.Equal(test.expErr, BetweenInt(test.i, test.min, test.max)())
+			is.Equal(test.expErr, BetweenNumber(test.i, test.min, test.max)())
 		})
 	}
 }
@@ -183,7 +183,7 @@ func TestMinInt64(t *testing.T) {
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is = is.NewRelaxed(t)
-			is.Equal(test.expErr, MinInt64(test.i, test.min)())
+			is.Equal(test.expErr, MinNumber(test.i, test.min)())
 		})
 	}
 }
@@ -213,7 +213,7 @@ func TestMaxInt64(t *testing.T) {
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is = is.NewRelaxed(t)
-			is.Equal(test.expErr, MaxInt64(test.i, test.max)())
+			is.Equal(test.expErr, MaxNumber(test.i, test.max)())
 		})
 	}
 }
@@ -257,7 +257,7 @@ func TestBetweenInt64(t *testing.T) {
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is = is.NewRelaxed(t)
-			is.Equal(test.expErr, BetweenInt64(test.i, test.min, test.max)())
+			is.Equal(test.expErr, BetweenNumber(test.i, test.min, test.max)())
 		})
 	}
 }
@@ -283,7 +283,7 @@ func TestPositiveInt(t *testing.T) {
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is = is.NewRelaxed(t)
-			is.Equal(test.expErr, PositiveInt(test.i)())
+			is.Equal(test.expErr, PositiveNumber(test.i)())
 		})
 	}
 }
@@ -309,7 +309,7 @@ func TestPositiveInt64(t *testing.T) {
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is = is.NewRelaxed(t)
-			is.Equal(test.expErr, PositiveInt64(test.i)())
+			is.Equal(test.expErr, PositiveNumber(test.i)())
 		})
 	}
 }
@@ -373,7 +373,7 @@ func TestMatchBytes(t *testing.T) {
 		})
 	}
 }
-func TestBool(t *testing.T) {
+func TestEqualBool(t *testing.T) {
 	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
@@ -396,7 +396,84 @@ func TestBool(t *testing.T) {
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is = is.NewRelaxed(t)
-			is.Equal(test.expErr, Bool(test.val, test.exp)())
+			is.Equal(test.expErr, Equal(test.val, test.exp)())
+		})
+	}
+}
+
+func TestEqualString(t *testing.T) {
+	t.Parallel()
+	is := is.New(t)
+	tt := map[string]struct {
+		val    string
+		exp    string
+		expErr error
+	}{
+		"val matching exp should pass": {
+			val: "hi there, this is a test!",
+			exp: "hi there, this is a test!",
+		}, "val not matching exp should fail": {
+			val:    "hi there, this is a test!",
+			exp:    "hi there, this is a test! but i'm different",
+			expErr: fmt.Errorf(validateBool, "hi there, this is a test!", "hi there, this is a test! but i'm different"),
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is = is.NewRelaxed(t)
+			is.Equal(test.expErr, Equal(test.val, test.exp)())
+		})
+	}
+}
+
+func TestEqualInt(t *testing.T) {
+	t.Parallel()
+	is := is.New(t)
+	tt := map[string]struct {
+		val    int
+		exp    int
+		expErr error
+	}{
+		"val matching exp should pass": {
+			val: 1234,
+			exp: 1234,
+		}, "val not matching exp should fail": {
+			val:    1234,
+			exp:    433321,
+			expErr: fmt.Errorf(validateBool, 1234, 433321),
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is = is.NewRelaxed(t)
+			is.Equal(test.expErr, Equal(test.val, test.exp)())
+		})
+	}
+}
+
+func TestEqualDate(t *testing.T) {
+	t.Parallel()
+	is := is.New(t)
+	tt := map[string]struct {
+		val    time.Time
+		exp    time.Time
+		expErr error
+	}{
+		"val matching exp should pass": {
+			val: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+			exp: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+		}, "val not matching exp should fail": {
+			val: time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+			exp: time.Date(2021, 1, 1, 1, 1, 1, 2, time.UTC),
+			expErr: fmt.Errorf(validateBool,
+				time.Date(2021, 1, 1, 1, 1, 1, 1, time.UTC),
+				time.Date(2021, 1, 1, 1, 1, 1, 2, time.UTC)),
+		},
+	}
+	for name, test := range tt {
+		t.Run(name, func(t *testing.T) {
+			is = is.NewRelaxed(t)
+			is.Equal(test.expErr, Equal(test.val, test.exp)())
 		})
 	}
 }
