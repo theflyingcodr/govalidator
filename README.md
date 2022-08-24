@@ -6,6 +6,22 @@ It uses a fluent API to allow chaining of validators to keep things concise and 
 
 There is also a provided Validator interface which can applied to structs and tested in the like of http handlers or error handlers.
 
+## Installation
+
+GoValidator now utilises generics toi reduce the number of function duplication previously required. This requires go1.18 or above. 
+
+If you wish to have the version that doesn't require generics (this is no longer maintained), install as shown:
+
+```bash
+go get github.com/theflyingcodr/govalidator@v0.1.3
+```
+
+To get the latest version with Generics, install using the below:
+
+```bash
+go get github.com/theflyingcodr/govalidator/v2
+```
+
 ## Error structure
 
 Validation functions are ran per field and multiple functions can be evaluated per field.
