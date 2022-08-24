@@ -414,9 +414,9 @@ func TestEqualString(t *testing.T) {
 			val: "hi there, this is a test!",
 			exp: "hi there, this is a test!",
 		}, "val not matching exp should fail": {
-			val:    "hi there, this is a test!",
+			val:    "hi there, this is a test",
 			exp:    "hi there, this is a test! but i'm different",
-			expErr: fmt.Errorf(validateBool, "hi there, this is a test!", "hi there, this is a test! but i'm different"),
+			expErr: fmt.Errorf(validateBool, "hi there, this is a test", "hi there, this is a test! but i'm different"),
 		},
 	}
 	for name, test := range tt {
