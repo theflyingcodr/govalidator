@@ -13,7 +13,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/theflyingcodr/govalidator"
+	"github.com/theflyingcodr/govalidator/v2"
 )
 
 // Request is a request, duh.
@@ -38,8 +38,8 @@ func main() {
 			if err := validator.New().
 				Validate("name", validator.StrLength(req.Name, 4, 10)).
 				Validate("dob", validator.NotEmpty(req.DOB), validator.DateBefore(req.DOB, time.Now().AddDate(-16, 0, 0))).
-				Validate("isEnabled", validator.Bool(req.IsEnabled, false)).
-				Validate("count", validator.PositiveInt(req.Count)).Err(); err != nil {
+				Validate("isEnabled", validator.Equal(req.IsEnabled, false)).
+				Validate("count", validator.PositiveNumber(req.Count)).Err(); err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				resp := map[string]interface{}{
 					"errors": err,

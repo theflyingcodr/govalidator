@@ -1,3 +1,6 @@
 # github.com/matryer/is v1.4.0
-## explicit
+## explicit; go 1.14
 github.com/matryer/is
+# golang.org/x/exp v0.0.0-20220823124025-807a23277127
+## explicit; go 1.18
+golang.org/x/exp/constraints

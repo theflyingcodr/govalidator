@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/theflyingcodr/govalidator"
+	"github.com/theflyingcodr/govalidator/v2"
 )
 
 var (
@@ -18,7 +18,7 @@ func main() {
 	flag.Parse()
 	if err := validator.New().
 		Validate("name", validator.StrLength(name, 1, 20)).
-		Validate("amount", validator.MinInt(total, 10)).Err(); err != nil {
+		Validate("amount", validator.MinNumber(total, 10)).Err(); err != nil {
 		fmt.Println(err)
 		flag.PrintDefaults()
 	}

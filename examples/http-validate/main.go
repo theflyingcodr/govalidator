@@ -18,7 +18,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/theflyingcodr/govalidator"
+	"github.com/theflyingcodr/govalidator/v2"
 )
 
 // Request is a request, duh.
@@ -34,8 +34,8 @@ func (r *Request) Validate() validator.ErrValidation {
 	return validator.New().
 		Validate("name", validator.StrLength(r.Name, 4, 10)).
 		Validate("dob", validator.NotEmpty(r.DOB), validator.DateBefore(r.DOB, time.Now().AddDate(-16, 0, 0))).
-		Validate("isEnabled", validator.Bool(r.IsEnabled, false)).
-		Validate("count", validator.PositiveInt(r.Count))
+		Validate("isEnabled", validator.Equal(r.IsEnabled, false)).
+		Validate("count", validator.PositiveNumber(r.Count))
 }
 
 func main() {
