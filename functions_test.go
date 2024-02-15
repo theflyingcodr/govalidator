@@ -374,6 +374,7 @@ func TestMatchBytes(t *testing.T) {
 		})
 	}
 }
+
 func TestEqualBool(t *testing.T) {
 	t.Parallel()
 	is := is.New(t)
@@ -969,7 +970,7 @@ func TestEmpty(t *testing.T) {
 	}
 }
 
-func TestAnyString(t *testing.T) {
+func TestAny(t *testing.T) {
 	t.Parallel()
 	is := is.New(t)
 	tt := map[string]struct {
@@ -1000,7 +1001,7 @@ func TestAnyString(t *testing.T) {
 	for name, test := range tt {
 		t.Run(name, func(t *testing.T) {
 			is = is.NewRelaxed(t)
-			is.Equal(test.expErr, AnyString(test.val, test.list...)())
+			is.Equal(test.expErr, Any(test.val, test.list...)())
 		})
 	}
 }
