@@ -280,8 +280,8 @@ func Email(val string) ValidationFunc {
 	}
 }
 
-// AnyString will check if the provided string is in a set of allowed values.
-func AnyString(val string, vv ...string) ValidationFunc {
+// Any will check if the provided value is in a set of allowed values.
+func Any[T comparable](val T, vv ...T) ValidationFunc {
 	return func() error {
 		for _, v := range vv {
 			if val == v {
@@ -291,4 +291,11 @@ func AnyString(val string, vv ...string) ValidationFunc {
 
 		return errors.New("value not found in allowed values")
 	}
+}
+
+// AnyString will check if the provided string is in a set of allowed values.
+//
+// Deprecated: use Any instead. Will be removed in a future release.
+func AnyString(val string, vv ...string) ValidationFunc {
+	return Any(val, vv...)
 }
